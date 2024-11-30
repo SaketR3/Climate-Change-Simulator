@@ -1,18 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Hello, World! - A-Frame</title>
-    <meta name="description" content="Hello, World! - A-Frame">
+    <title>Climate Change Simulator</title>
+    <meta name="description" content="Climate Change Simulator">
     <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-template-component@3.x.x/dist/aframe-template-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-layout-component@5.x.x/dist/aframe-layout-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@5.x.x/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.jss"></script>
+    
+    <script id="link" type="text/html">
+      <a-entity class="link"
+        geometry="primitive: plane; height: 1; width: 1"
+        material="shader: flat; src: ${thumb}"
+        sound="on: click; src: #click-sound"
+        event-set__mouseenter="scale: 1.2 1.2 1"
+        event-set__mouseleave="scale: 1 1 1"
+        event-set__click="_target: #image-360; _delay: 300; material.src: ${src}"
+        proxy-event="event: click; to: #image-360; as: fade"></a-entity>
+    </script>
   </head>
+
   <body>
     <a-scene>
-      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
-      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
-      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-      <a-sky color="#ECECEC"></a-sky>
+      <a-assets>
+        <img id="nyc" src="static/nyc-2.jpeg" alt="A 360-degree panorama view of New York City's skyscrapers" crossorigin="anonymous">
+        <img id="nyc-thumb" src="static/nyc-thumb.jpg" alt="New York City Today button" crossorigin="anonymous">
+
+        <img id="nyc-climate-change" src="static/nyc-climate-change.jpeg" alt="A 360-degree panorama view of New York City with flooding, broken down highways, and lots of foliage" crossorigin="anonymous">
+        <img id="nyc-climate-change-thumb" src="static/nyc-climate-change-thumb.jpg" alt="New York City Under Severe Climate Change button" crossorigin="anonymous">
+        
+        <img id="amsterdam" src="static/amsterdam.jpg" alt="A 360-degree panorama view of a street in Amsterdam" crossorigin="anonymous">
+        <img id="amsterdam-thumb" src="static/amsterdam-thumb.png" alt="Amsterdam Today button" crossorigin="anonymous">
+
+        <img id="amsterdam-climate-change" src="static/amsterdam-climate-change.jpeg" alt="A 360-degree panorama view of Amsterdam with severe flooding and pollution" crossorigin="anonymous">
+        <img id="amsterdam-climate-change-thumb" src="static/amsterdam-climate-change-thumb.png" alt="Amsterdam Under Severe Climate Change button" crossorigin="anonymous">
+        
+        <img id="cairo" src="static/cairo.jpg" alt="A 360-degree panorama view of a park and skyscrapers in Cairo" crossorigin="anonymous">
+        <img id="cairo-thumb" src="static/cairo-thumb.png" alt="Cairo Today button" crossorigin="anonymous">
+
+        <img id="cairo-climate-change" src="static/cairo-climate-change.jpg" alt="A 360-degree panorama view of Cairo with severe flooding and damaged buildings" crossorigin="anonymous">
+        <img id="cairo-climate-change-thumb" src="static/cairo-climate-change-thumb.png" alt="Cairo Under Severe Climate Change button" crossorigin="anonymous">
+        
+        <audio id="click-sound" src="https://cdn.aframe.io/360-image-gallery-boilerplate/audio/click.ogg" crossorigin="anonymous"></audio>
+      </a-assets>
+
+      <a-sky id="image-360" radius="10" src="#nyc"
+             animation__fade="property: components.material.material.color; type: color; from: #FFF; to: #000; dur: 300; startEvents: fade"
+             animation__fadeback="property: components.material.material.color; type: color; from: #000; to: #FFF; dur: 300; startEvents: animationcomplete__fade"></a-sky>
+
+      <a-entity id="links" layout="type: line; margin: 1.5" position="-1.5 -1 -4">
+        <a-entity template="src: #link" data-src="#nyc" data-thumb="#nyc-thumb"></a-entity>
+        <a-entity template="src: #link" data-src="#nyc-climate-change" data-thumb="#nyc-climate-change-thumb"></a-entity>
+        <a-entity template="src: #link" data-src="#amsterdam" data-thumb="#amsterdam-thumb"></a-entity>
+        <a-entity template="src: #link" data-src="#amsterdam-climate-change" data-thumb="#amsterdam-climate-change-thumb"></a-entity>
+        <a-entity template="src: #link" data-src="#cairo" data-thumb="#cairo-thumb"></a-entity>
+        <a-entity template="src: #link" data-src="#cairo-climate-change" data-thumb="#cairo-climate-change-thumb"></a-entity>
+      </a-entity>
+
+      <a-entity camera look-controls>
+        <a-cursor
+          id="cursor"
+          animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
+          animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
+          event-set__mouseenter="_event: mouseenter; color: springgreen"
+          event-set__mouseleave="_event: mouseleave; color: black"
+          raycaster="objects: .link"></a-cursor>
+      </a-entity>
     </a-scene>
   </body>
 </html>
